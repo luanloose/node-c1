@@ -34,6 +34,6 @@ const unidadeSaudeSchema = mongoose.Schema({
 
 let UnidadeSaude = module.exports = mongoose.model('unidadeSaude', unidadeSaudeSchema);
 
-module.exports.get = function(callback, limit){
+module.exports.get = function (callback, limit) {
     UnidadeSaude.find(callback).limit(limit);
 }

@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const pessoaSchema = mongoose.Schema({
+const pessoaSchema = new mongoose.Schema({
     nome: {
         type: mongoose.Schema.Types.String,
         required: true
     },
-    cpf_pessoa: {
+    cpf: {
         type: mongoose.Schema.Types.String,
         required: true
     },
@@ -13,7 +13,7 @@ const pessoaSchema = mongoose.Schema({
         type: mongoose.Schema.Types.String,
         required: true
     },
-    telefone_pessoa: {
+    telefone: {
         type: mongoose.Schema.Types.String,
         required: true
     },
@@ -21,19 +21,19 @@ const pessoaSchema = mongoose.Schema({
         type: mongoose.Schema.Types.Boolean,
         required: true
     },
-    endereco_pessoa: {
+    endereco: {
         type: mongoose.Schema.Types.String,
         required: true
     },
-    email_pessoa: {
+    email: {
         type: mongoose.Schema.Types.String,
         required: true
     },
-    // unidadeSaude: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "unidadeSaude",
-    //     required: true
-    // },
+    agendamento: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'agendamento', 
+        require: false
+    }
 });
 
 let Pessoa = module.exports = mongoose.model('pessoa', pessoaSchema);

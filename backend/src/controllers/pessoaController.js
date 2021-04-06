@@ -1,99 +1,84 @@
-const pessoaModel = require('../models/pessoa');
+const pessoa = require('../models/pessoa');
+const unidadeSaude = require('../models/unidadeSaude');
 
-module.exports = {
-
-    // Adicionar uma nova pessoa
-    async adicionarPessoa(request, response) {
+exports.add = async (request, response) => {
+    try {
 
         const {
             nome,
-            cpf_pessoa,
+            cpf,
             data_nascimento,
-            telefone_pessoa,
+            telefone,
             grupo_prioritario,
-            endereco_pessoa,
-            email_pessoa,
+            endereco,
+            email,
             // unidadeSaude
         } = request.body;
 
-        // Recuperar todas as pessoas cadastradas no banco
-        pessoaModel.find((err, pessoas) => {
+        pessoa.find((err, pessoas) => {
             if (err) {
-                console.log("Não foi possível recuperar as pessoas!");
+                console.log("Não foi possível recuperar o usuario!");
                 response.json({
                     status: "erro",
-                    message: "Não foi possível recuperar as pessoas e portanto inserir uma nova pessoa!"
+                    message: "Não foi possível recuperar os usuarios e portanto inserir um novo usuario!"
                 });
             }
 
-            // Verificar se ja existe uma pessoa cadastrada com o mesmo cpf
             pessoas.map(item => {
-                if (cpf_pessoa === item.cpf_pessoa) {
+                if (cpf === item.cpf) {
                     response.json({
                         status: "erro",
-                        message: `A pessoa ${nome} já está cadastrada com o cpf ${cpf_pessoa}`
+                        message: `A pessoa ${nome} já está cadastrada com o cpf ${cpf}`
                     });
                     return;
                 }
             });
 
-            // Cadastrar pessoa
-            let pessoa = new pessoaModel({
+            let newPessoa = new pessoa({
                 nome,
-                cpf_pessoa,
+                cpf,
                 data_nascimento,
-                telefone_pessoa,
+                telefone,
                 grupo_prioritario,
-                endereco_pessoa,
-                email_pessoa,
+                endereco,
+                email,
                 // unidadeSaude
             });
 
-            pessoa.save((erro) => {
+            newPessoa.save((erro) => {
                 if (erro) {
                     response.send({
                         status: "erro",
-                        message: "Não foi possível inserir pessoa."
+                        message: erro
                     });
                 } else {
                     response.send({
                         status: "ok",
-                        message: `Pessoa ${nome} inserida com sucesso!`
+                        message: `Usuário ${request.body.nome}, inserida com sucesso!`
                     });
                 }
-            });
+            })
         });
-    },
 
-    // Listar pessoas
-    async listarPessoas(request, response) {
-        pessoaModel.find(function (err, pessoas) {
-            if (err) {
-                console.log("Não foi possível recuperar as pessoas!");
-                response.json({
-                    status: "erro",
-                    message: "Não foi possível recuperar as pessoas!"
-                });
-            } else {
-                response.json({
-                    status: "ok",
-                    pessoas: pessoas
-                });
-            }
 
-        });
-    },
+    } catch (error) {
+        console.log(error);
+        response.status(400).json({ error: "Erro ao criar usuário" });
+    }
 
-    // Obter pessoa por id
-    async listarPessoaPorID(request, response) {
-        let id_pessoa = request.query.id;
+}
 
-        pessoaModel.findById(id_pessoa, function (err, pessoa) {
+exports.list = async (request, response) => {
+
+    const { id } = request.params;
+
+    if (id) {
+        pessoa.findById(id, function (err, pessoa) {
             if (err || !pessoa) {
-                console.log(`Não foi possivel recuperar a pessoa de id: ${id_pessoa}`);
+                console.log(`Não foi possivel recuperar a pessoa de id: ${id}`);
                 response.json({
                     status: "erro",
-                    message: `Não foi possivel recuperar a pessoa de id: ${id_pessoa}`
+                    message: `Não foi possivel recuperar a pessoa de id: ${id}`
                 });
             } else {
                 response.json({
@@ -103,78 +88,92 @@ module.exports = {
             }
 
         });
-    },
-
-    // Editar uma pessoa
-    async atualizarPessoa(request, response) {
-        let id_pessoa = request.query.id;
-
-        pessoaModel.findById(id_pessoa, (erro, pessoa) => {
-            if (erro || !pessoa) {
-                console.log("Não foi possível recuperar a pessoa!");
-                response.json({
-                    status: "erro",
-                    message: `Não foi possível recuperar a pessoa de id ${id_pessoa} para atualização`
-                });
-            } else {
-
-                const {
-                    nome,
-                    cpf_pessoa,
-                    data_nascimento,
-                    telefone_pessoa,
-                    grupo_prioritario,
-                    endereco_pessoa,
-                    email_pessoa,
-                    // unidadeSaude
-                } = request.body;
-
-                pessoa.nome = nome;
-                pessoa.cpf_pessoa = cpf_pessoa;
-                pessoa.data_nascimento = data_nascimento;
-                pessoa.telefone_pessoa = telefone_pessoa;
-                pessoa.grupo_prioritario = grupo_prioritario;
-                pessoa.endereco_pessoa = endereco_pessoa;
-                pessoa.email_pessoa = email_pessoa;
-
-                console.log(pessoa);
-
-                pessoa.save((err => {
-                    if (err) {
-                        response.json({
-                            status: "erro",
-                            message: err
-                        });
-                    } else {
-                        response.json({
-                            status: "ok",
-                            message: `Pessoa ${pessoa.nome} atualizada com sucesso!`,
-                            novaPessoa: pessoa
-                        });
-                    }
-                }));
-            }
-        });
-    },
-
-    // Remover pessoa
-    async removerPessoa(request, response) {
-        let id_pessoa = request.query.id;
-
-        pessoaModel.deleteOne({
-            _id: id_pessoa
-        }, (err) => {
+    } else {
+        pessoa.find(function (err, pessoas) {
             if (err) {
+                console.log("Não foi possível recuperar as pessoas!");
                 response.json({
                     status: "erro",
-                    message: "Houve um erro ao deletar pessoa"
+                    message: "Não foi possível recuperar as pessoas!"
                 });
             } else {
                 response.json({
-                    status: "ok",
-                    message: `Pessoa deletado com sucesso!`
+                    pessoas: pessoas
                 });
             }
         });
+
     }
+};
+
+
+exports.update = async (request, response) => {
+    const { id } = request.params;
+
+    pessoa.findById(id, (erro, pessoa) => {
+        if (erro || !pessoa) {
+            console.log("Não foi possível recuperar a pessoa!");
+            response.json({
+                status: "erro",
+                message: `Não foi possível recuperar a pessoa de id ${id} para atualização`
+            });
+        } else {
+
+            const {
+                nome,
+                cpf,
+                data_nascimento,
+                telefone,
+                grupo_prioritario,
+                endereco,
+                email,
+                // unidadeSaude
+            } = request.body;
+
+            pessoa.nome = nome;
+            pessoa.cpf = cpf;
+            pessoa.data_nascimento = data_nascimento;
+            pessoa.telefone = telefone;
+            pessoa.grupo_prioritario = grupo_prioritario;
+            pessoa.endereco = endereco;
+            pessoa.email = email;
+
+            console.log(pessoa);
+
+            pessoa.save((err => {
+                if (err) {
+                    response.json({
+                        status: "erro",
+                        message: err
+                    });
+                } else {
+                    response.json({
+                        status: "ok",
+                        message: `Pessoa ${pessoa.nome} atualizada com sucesso!`,
+                        novaPessoa: pessoa
+                    });
+                }
+            }));
+        }
+    });
+}
+
+exports.delete = async (request, response) => {
+    const { id } = request.params;
+
+    pessoa.deleteOne({
+        _id: id
+    }, (err) => {
+        if (err) {
+            response.json({
+                status: "erro",
+                message: "Houve um erro ao deletar pessoa"
+            });
+        } else {
+            response.json({
+                status: "ok",
+                message: `Pessoa deletado com sucesso!`
+            });
+        }
+    });
 }

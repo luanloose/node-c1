@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+
 // Conectar ao banco mongodb
 // ! configurar o nome do banco com o nome do container -mongo-trabalho-c1
 mongoose.connect(
@@ -24,7 +25,7 @@ mongoose.connect(
 mongoose.connection.on('error', console.error.bind(console, 'Erro ao conectar no Mongo'));
 mongoose.connection.once('open', () => console.log("Banco de Dados Mongo conectado com sucesso"));
 
-// Configura o arquivo de rotas
+// Configura os arquivos de rotas
 app.use(routes);
 
 // Inicializa o servidor
