@@ -1,38 +1,44 @@
 const mongoose = require('mongoose');
+const Schema =  mongoose.Schema;
 
-const pessoaSchema = new mongoose.Schema({
+const pessoaSchema = new Schema({
     nome: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     cpf: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     data_nascimento: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     telefone: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     grupo_prioritario: {
-        type: mongoose.Schema.Types.Boolean,
+        type: Schema.Types.Boolean,
         required: true
     },
     endereco: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     email: {
-        type: mongoose.Schema.Types.String,
+        type: Schema.Types.String,
         required: true
     },
     agendamento: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId, 
         ref: 'agendamento', 
         require: false
+    },
+    unidade_saude: {
+        type: Schema.Types.ObjectId, 
+        ref: 'unidadeSaude', 
+        require: true
     }
 });
 

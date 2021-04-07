@@ -1,35 +1,35 @@
 const mongoose = require('mongoose');
+const Schema =  mongoose.Schema;
 
-const unidadeSaudeSchema = mongoose.Schema({
-    nome_unidade: {
-        type: mongoose.Schema.Types.String,
+const unidadeSaudeSchema = Schema({
+    nome: {
+        type: Schema.Types.String,
         required: true
     },
-    descricao_unidade: {
-        type: mongoose.Schema.Types.String,
+    descricao: {
+        type: Schema.Types.String,
         required: true
     },
-    endereco_unidade: {
-        type: mongoose.Schema.Types.String,
+    endereco: {
+        type: Schema.Types.String,
         required: true
     },
-    telefone_unidade: {
-        type: mongoose.Schema.Types.String,
+    telefone: {
+        type: Schema.Types.String,
         required: true
     },
-    email_unidade: {
-        type: mongoose.Schema.Types.String,
+    email: {
+        type: Schema.Types.String,
         required: true
     },
-    latlong_unidade: {
-        type: mongoose.Schema.Types.String,
+    latlong: {
+        type: Schema.Types.String,
         required: true
     },
-    // pessoa: [{
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "pessoa",
-    //     required: false
-    // }],
+    pessoa: [{
+        type: Schema.Types.ObjectId,
+        ref: 'pessoa'
+    }]
 });
 
 let UnidadeSaude = module.exports = mongoose.model('unidadeSaude', unidadeSaudeSchema);

@@ -1,28 +1,29 @@
 const mongoose = require('mongoose');
+const Schema =  mongoose.Schema;
 
-const agendamentoSchema = mongoose.Schema({
-    data_hora_agendamento: {
-        type: mongoose.Schema.Types.Date,
+const agendamentoSchema = Schema({
+    data_hora: {
+        type: Schema.Types.Date,
         required: true
     },
     necessidades_especiais: {
-        type: mongoose.Schema.Types.Boolean,
+        type: Schema.Types.Boolean,
         required: true
     },
-    observacoes_agendamento: {
-        type: mongoose.Schema.Types.String,
+    observacoes: {
+        type: Schema.Types.String,
         required: false
     },
     pessoa: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "pessoa",
         required: true
     },
-    // unidadeSaude: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "unidadeSaude",
-    //     required: true
-    // },
+    unidade_saude: {
+        type: Schema.Types.ObjectId,
+        ref: "unidadeSaude",
+        required: true
+    },
 });
 
 let Agendamento = module.exports = mongoose.model('agendamento', agendamentoSchema);

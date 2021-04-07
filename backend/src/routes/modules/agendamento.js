@@ -6,12 +6,12 @@ const AgendamentoController = require('../../controllers/agendamentoController')
 
 routes.post('/add', AgendamentoController.add);
 
-// routes.get('/', AgendamentoController.list);
+routes.get('/', AgendamentoController.list);
 
-// routes.get('/:id', AgendamentoController.list);
+routes.get('/:id', AgendamentoController.list);
 
-// routes.put('/:id', AgendamentoController.update);
+routes.put('/:id', AgendamentoController.update);
 
-// routes.delete('/:id', AgendamentoController.delete);
+routes.delete('/:id', AgendamentoController.delete);
 
 module.exports = routes;
