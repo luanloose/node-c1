@@ -8,7 +8,7 @@ Api de agendamento de consultas nas unidades de saúde.
 
 2. Rodar o comando `docker-compose up` dentro do diretorio do projeto.
 
-3. importar a [collection](https://www.getpostman.com/collections/5369f4115098ab2a3667).
+3. Importar a [collection](https://www.getpostman.com/collections/5369f4115098ab2a3667) dentro do cliente (Postman ou Insomnia).
 
 4. Pronto para brincar no projeto.
 
