@@ -92,7 +92,6 @@ exports.list = async (request, response) => {
                     pessoa: pessoa
                 });
             }
-
         });
     } else {
         pessoa.find(function (erro, pessoas) {
@@ -107,7 +106,6 @@ exports.list = async (request, response) => {
                 });
             }
         });
-
     }
 };
 

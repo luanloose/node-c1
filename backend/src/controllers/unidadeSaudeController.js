@@ -152,7 +152,7 @@ exports.delete = async (request, response) => {
   try {
     const { id } = request.params;
 
-    unidade.deleteOne({
+    unidadeSaude.deleteOne({
       _id: id
     }, (err) => {
       if (err) {

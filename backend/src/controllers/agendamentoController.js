@@ -152,7 +152,7 @@ exports.delete = async (request, response) => {
   try {
     const { id } = request.params;
 
-    agendamento.deleteOne({
+    agendamentoModel.deleteOne({
       _id : id
     }, (erro) => {
       if (erro) {
