@@ -18,6 +18,7 @@ exports.add = async (request, response) => {
           status: "erro",
           message: "Não foi possível recuperar as unidades de saúde!"
         });
+        return;
       }
 
       unidades.map(item => {
@@ -26,6 +27,7 @@ exports.add = async (request, response) => {
             status: "erro",
             message: `A unidade de saúde ${nome} já está cadastrado no sistema com e-mail: ${email}`
           });
+          return;
         }
       });
 
@@ -44,11 +46,13 @@ exports.add = async (request, response) => {
             status: "erro",
             message: "Não foi possível inserir a unidade de saúde."
           });
+          return;
         } else {
           response.send({
             status: "success",
             message: `Unidade ${nome} inserida com sucesso!`
           });
+          return;
         }
       })
     });
@@ -59,20 +63,25 @@ exports.add = async (request, response) => {
 
 exports.list = async (request, response) => {
   try {
-    const { id } = request.params;
+    const id = request.params.id;
     if (id) {
 
-      const unidadeDeSaude = await unidadeSaude.findById(id, (err, pessoas) => {
-        if (err) {
-          return false;
-        }
-      });
+      if (id.length != 12 && id.length != 24) {
+        response.status(200).json({
+          status: "erro",
+          message: `${id} deve conter 12 ou 24 caracteres!`
+        });
+        return;
+      }
+
+      const unidadeDeSaude = await unidadeSaude.findById(id);
 
       if (!unidadeDeSaude) {
         response.status(200).json({
-            status: "erro",
-            message: "Não foi possível recuperar as unidades de saude!"
-          });
+          status: "erro",
+          message: `Não foi possível recuperar a unidade de saúde de id ${id}`
+        });
+        return;
       }
 
       const pessoas = await pessoa.find({ unidade_saude: id });
@@ -103,8 +112,26 @@ exports.list = async (request, response) => {
   }
 };
 
-exports.update = (request, response) => {
+exports.update = async (request, response) => {
   const { id } = request.params;
+
+  if (id.length != 12 && id.length != 24) {
+    response.status(200).json({
+      status: "erro",
+      message: `${id} deve conter 12 ou 24 caracteres!`
+    });
+    return;
+  }
+
+  const unidadeDeSaude = await unidadeSaude.findById(id);
+
+  if (!unidadeDeSaude) {
+    response.status(200).json({
+      status: "erro",
+      message: `Não foi possível recuperar a unidade de saúde de id ${id}`
+    });
+    return;
+  }
 
   unidadeSaude.findById(id, (erro, unidade) => {
     if (erro || !unidade) {
@@ -112,6 +139,7 @@ exports.update = (request, response) => {
         status: "erro",
         message: `Não foi possível recuperar a unidade de saúde de id ${id} para update!`
       });
+      return;
     } else {
 
       const {
@@ -150,7 +178,35 @@ exports.update = (request, response) => {
 
 exports.delete = async (request, response) => {
   try {
-    const { id } = request.params;
+    const id = request.params.id;
+
+    if (id.length != 12 && id.length != 24 || id === null) {
+      response.status(200).json({
+        status: "erro",
+        message: `${id} deve conter 12 ou 24 caracteres!`
+      });
+      return;
+    }
+
+    const unidadeDeSaude = await unidadeSaude.findById(id);
+
+    if (!unidadeDeSaude) {
+      response.status(200).json({
+        status: "erro",
+        message: `Não foi possível recuperar a unidade de saúde de id ${id}`
+      });
+      return;
+    }
+
+    const pessoas = await pessoa.find({ unidade_saude: id });
+
+    if (Object.keys(pessoas).length > 0) {
+      response.status(200).json({
+        status: "erro",
+        message: "Não é possível excluir essa unidade, existem pessoas associadas a ela!"
+      });
+      return;
+    }
 
     unidadeSaude.deleteOne({
       _id: id
@@ -169,6 +225,7 @@ exports.delete = async (request, response) => {
     });
 
   } catch (error) {
+    console.log(error);
     response.status(400).json({ error: "Erro ao deletar a unidade de saúde!" });
   }
 }
