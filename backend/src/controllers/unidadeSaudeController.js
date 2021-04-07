@@ -1,4 +1,5 @@
 const unidadeSaude = require('../models/unidadeSaude');
+const pessoa = require('../models/pessoa');
 
 exports.add = async (request, response) => {
   try {
@@ -45,7 +46,7 @@ exports.add = async (request, response) => {
           });
         } else {
           response.send({
-            status: "ok",
+            status: "success",
             message: `Unidade ${nome} inserida com sucesso!`
           });
         }
@@ -60,19 +61,28 @@ exports.list = async (request, response) => {
   try {
     const { id } = request.params;
     if (id) {
-      unidadeSaude.findById(id, function (erro, unidadeS) {
-        if (erro || !unidadeS) {
-          response.status(200).json({
-            status: "erro",
-            message: `Não foi possivel recuperar a unidade de saude de id: ${id}`
-          });
-        } else {
-          response.status(200).json({
-            status: "ok",
-            unidade: unidadeS
-          });
+
+      const unidadeDeSaude = await unidadeSaude.findById(id, (err, pessoas) => {
+        if (err) {
+          return false;
         }
-      }).populate('pessoa');
+      });
+
+      if (!unidadeDeSaude) {
+        response.status(200).json({
+            status: "erro",
+            message: "Não foi possível recuperar as unidades de saude!"
+          });
+      }
+
+      const pessoas = await pessoa.find({ unidade_saude: id });
+
+      unidadeDeSaude.pessoa = pessoas;
+
+      response.status(200).json({
+        status: "success",
+        unidade: unidadeDeSaude
+      });
     } else {
       unidadeSaude.find(function (erro, unidadeS) {
         if (erro) {
@@ -88,6 +98,7 @@ exports.list = async (request, response) => {
       });
     }
   } catch (error) {
+    console.log(error);
     response.status(400).json({ error: "Erro ao listar as unidades" });
   }
 };
@@ -127,7 +138,7 @@ exports.update = (request, response) => {
           });
         } else {
           response.status(200).json({
-            status: "ok",
+            status: "success",
             message: `Unidade de saúde ${unidade.nome} atualizado com sucesso!`,
             unidade: unidade
           })
@@ -151,7 +162,7 @@ exports.delete = async (request, response) => {
         });
       } else {
         response.status(200).json({
-          status: "ok",
+          status: "success",
           message: `Unidade de saúde deletada com sucesso!`
         });
       }

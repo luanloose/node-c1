@@ -58,7 +58,7 @@ exports.add = async (request, response) => {
                             });
                         } else {
                             response.status(200).json({
-                                status: "ok",
+                                status: "success",
                                 message: `Usuário ${nome}, inserida com sucesso!`
                             });
                         }
@@ -88,7 +88,7 @@ exports.list = async (request, response) => {
                 });
             } else {
                 response.status(200).json({
-                    status: "ok",
+                    status: "success",
                     pessoa: pessoa
                 });
             }
@@ -151,7 +151,7 @@ exports.update = async (request, response) => {
                     });
                 } else {
                     response.status(200).json({
-                        status: "ok",
+                        status: "success",
                         message: `Pessoa ${pessoa.nome} atualizada com sucesso!`,
                         pessoa: pessoa
                     });
@@ -174,7 +174,7 @@ exports.delete = async (request, response) => {
             });
         } else {
             response.status(200).json({
-                status: "ok",
+                status: "success",
                 message: `Pessoa deletado com sucesso!`
             });
         }

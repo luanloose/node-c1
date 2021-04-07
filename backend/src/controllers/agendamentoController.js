@@ -1,4 +1,6 @@
 const agendamentoModel = require('../models/agendamento');
+const unidadeSaude = require('../models/unidadeSaude');
+const pessoa = require('../models/pessoa');
 
 exports.add = async (request, response) => {
   try {
@@ -46,7 +48,7 @@ exports.add = async (request, response) => {
           });
         } else {
           response.status(200).json({
-            status: "ok",
+            status: "success",
             message: `Agendamento inserido com sucesso!`
           });
         }
@@ -61,22 +63,23 @@ exports.list = async (request, response) => {
   try {
     const { id } = request.params;
     if (id) {
-      agendamentoModel.findById(id, (err, agendamento) => {
-        if (err || !agendamento) {
-          response.status(200).json({
-            status: "erro",
-            message: `Não foi possivel recuperar o agendamento de id: ${id}`
-          });
-        } else {
-          response.status(200).json({
-            status: "ok",
-            agendamento: agendamento
-          });
-        }
 
-      }).populate('pessoa');
+      const agendamento = await agendamentoModel.findById(id);
+
+      const unidadeDeSaude = await unidadeSaude.findById(agendamento.unidade_saude);
+
+      const pessoaAgendada = await pessoa.findById(agendamento.pessoa);
+
+      agendamento.pessoa = pessoaAgendada;
+      agendamento.unidade_saude = unidadeDeSaude;
+
+      response.status(200).json({
+        status: "success",
+        agendamento: agendamento
+      });
+
     } else {
-      agendamento.find((erro, agendamentos) => {
+      agendamentoModel.find((erro, agendamentos) => {
         if (erro) {
           response.status(200).json({
             status: "erro",
@@ -84,14 +87,15 @@ exports.list = async (request, response) => {
           });
         } else {
           response.status(200).json({
-            status: "ok",
+            status: "success",
             agendamentos: agendamentos
           });
         }
 
-      }).populate('pessoa').populate('unidadeSaude');
+      });
     }
   } catch (error) {
+    console.log(error);
     response.status(400).json({ error: "Erro ao listar os agendamentos" });
   }
 };
@@ -131,7 +135,7 @@ exports.update = async (request, response) => {
             });
           } else {
             response.status(200).json({
-              status: "ok",
+              status: "success",
               message: `Agendamento atualizada com sucesso!`,
               agendamento: agendamento
             });
@@ -158,7 +162,7 @@ exports.delete = async (request, response) => {
         });
       } else {
         response.status(200).json({
-          status: "ok",
+          status: "success",
           message: `Agendamento deletado com sucesso!`
         });
       }
