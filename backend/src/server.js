@@ -1,16 +1,15 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
 const routes = require('./routes/routes')
 
 const port = 3000;
 
-app.use(bodyParser.urlencoded({
+app.use(express.urlencoded({
     extended: true
 }));
-app.use(bodyParser.json());
+app.use(express.json());
 
 
 // Conectar ao banco mongodb
