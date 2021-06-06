@@ -1,5 +1,5 @@
-const pessoaModel = require('../models/pessoa');
-const unidadeSaude = require('../models/unidadeSaude');
+const pessoaModel = require('../../models/mongo/pessoa');
+const unidadeSaude = require('../../models/mongo/unidadeSaude');
 
 exports.add = async (request, response) => {
     try {
