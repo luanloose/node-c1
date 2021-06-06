@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const routes = Router();
 
-const PessoaController = require('../../controllers/pessoaController');
+const PessoaController = require('../../../controllers/mongo/pessoaController');
 
 routes.post('/add', PessoaController.add);
 

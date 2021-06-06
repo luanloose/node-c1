@@ -1,6 +1,6 @@
-const agendamentoModel = require('../models/agendamento');
-const unidadeSaude = require('../models/unidadeSaude');
-const pessoaModel = require('../models/pessoa');
+const agendamentoModel = require('../../models/mongo/agendamento');
+const unidadeSaude = require('../../models/mongo/unidadeSaude');
+const pessoaModel = require('../../models/mongo/pessoa');
 
 exports.add = async (request, response) => {
   try {

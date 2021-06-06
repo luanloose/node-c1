@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 
-const pessoa = require('./modules/pessoa');
-const agendamento = require('./modules/agendamento');
-const unidadeSaude = require('./modules/unidadeSaude');
+const pessoa = require('./modules/mongo/pessoa');
+const agendamento = require('./modules/mongo/agendamento');
+const unidadeSaude = require('./modules/mongo/unidadeSaude');
 
 app.use('/api/pessoa', pessoa);
 app.use('/api/agendamento', agendamento);
