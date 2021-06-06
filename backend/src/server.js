@@ -1,3 +1,6 @@
+require('dotenv').config({
+  path: process.env.NODE_ENV === "development" ? ".env.development" : ".env"
+});
 const express = require('express');
 const app = express();
 
@@ -6,26 +9,25 @@ const routes = require('./routes/routes')
 
 const port = 3000;
 
+require('./database');
+
 app.use(express.urlencoded({
     extended: true
 }));
 app.use(express.json());
 
-
-// Conectar ao banco mongodb
 // ! configurar o nome do banco com o nome do container -mongo-trabalho-c1
-mongoose.connect(
-    `mongodb://root:faesa123@mongo-trabalho-c1:27017/devwebII?authSource=admin`,
-    {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+// MUDAR URL NO ATLAS
+const strConnection = process.env.NODE_ENV === 'development' ?
+  `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}?authSource=admin` :
+  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}.kkfkq.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 
-mongoose.connection.on('error', console.error.bind(console, 'Erro ao conectar no Mongo'));
-mongoose.connection.once('open', () => console.log("Banco de Dados Mongo conectado com sucesso"));
+mongoose.connect(strConnection, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Configura os arquivos de rotas
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'Erro ao conectar no Mongo'));
+db.once('open', () => console.log("Banco de Dados Mongo conectado com sucesso"));
+
 app.use(routes);
-
-// Inicializa o servidor
 app.listen(port);
