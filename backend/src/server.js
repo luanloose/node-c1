@@ -16,11 +16,9 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
-// ! configurar o nome do banco com o nome do container -mongo-trabalho-c1
-// MUDAR URL NO ATLAS
 const strConnection = process.env.NODE_ENV === 'development' ?
   `mongodb://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}?authSource=admin` :
-  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}.kkfkq.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
+  `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}.wbhls.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 
 mongoose.connect(strConnection, { useNewUrlParser: true, useUnifiedTopology: true });
 
