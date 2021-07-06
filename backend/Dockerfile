@@ -15,7 +15,7 @@ RUN npm install
 COPY . .
 
 # Definir porta
-EXPOSE 3000
+EXPOSE 3333
 
 ENV NODE_ENV='production'
 

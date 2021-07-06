@@ -7,7 +7,7 @@ const app = express();
 const mongoose = require('mongoose');
 const routes = require('./routes/routes')
 
-const port = 3000;
+const port = 3333;
 
 require('./database');
 
