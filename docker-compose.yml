@@ -1,45 +1,44 @@
 version: '3.1'
 
 services:
-
   # * Criando serviços do banco de dados
   db:
     image: postgres
     restart: always
-    container_name: postgres-trabalho-c2
+    container_name: postgres-trabalho-c3
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: faesa123
     networks: 
-      - rede-trabalho-c2
+      - rede-trabalho-c3
 
   mongodb:
     image: mongo
     restart: always
-    container_name: mongo-trabalho-c2
+    container_name: mongo-trabalho-c3
     ports: 
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: faesa123
     networks: 
-      - rede-trabalho-c2
+      - rede-trabalho-c3
 
   # Craindo MongoExpress
   mongo-express:
     image: mongo-express
     restart: always
-    container_name: mongo-express-trabalho-c2
+    container_name: mongo-express-trabalho-c3
     networks:
-      - rede-trabalho-c2
+      - rede-trabalho-c3
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: faesa123
-      ME_CONFIG_MONGODB_SERVER: mongo-trabalho-c2
+      ME_CONFIG_MONGODB_SERVER: mongo-trabalho-c3
     depends_on:
       - mongodb
 
@@ -53,11 +52,11 @@ services:
       - './backend/package.json:/usr/app/package.json'
       - './backend/yarn.lock:/usr/app/yarn.lock'
     #image: node
-    container_name: trabalho-c2-backend
+    container_name: trabalho-c3-backend
     ports:
-      - "3000:3000"
+      - "3333:3333"
     networks: 
-      - rede-trabalho-c2
+      - rede-trabalho-c3
     depends_on: 
       - "mongodb"
       - "db"
@@ -65,8 +64,29 @@ services:
       - ./backend/.env.development
     command: >
       sh -c "yarn sequelize db:migrate && yarn start"
+  # Criando o frontend
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - './frontend:/usr/app'
+      - './frontend/package.json:/usr/app/package.json'
+      - './frontend/yarn.lock:/usr/app/yarn.lock'
+      - '/usr/app/node_modules/'
+    container_name: trabalho-c3-frontend
+    ports:
+      - "3000:3000"
+    # Utilizar para poder atualizar o projeto quando mudar algo no codigo
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+      - REACT_APP_URLSERVER=http://localhost:3333
+    networks: 
+      - rede-trabalho-c3
+    depends_on: 
+      - "db"
+      - "backend"
 
 # * Criando rede
 networks:
-  rede-trabalho-c2:
+  rede-trabalho-c3:
     driver: bridge

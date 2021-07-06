@@ -9,7 +9,8 @@ class Pessoa extends Model {
       telefone: DataTypes.STRING,
       grupo_prioritario: DataTypes.BOOLEAN,
       endereco: DataTypes.STRING,
-      email: DataTypes.STRING
+      email: DataTypes.STRING,
+      password: DataTypes.STRING
     }, {
       sequelize
     })
